@@ -54,4 +54,28 @@ const login = async (req, res) => {
     }
 }
 
-module.exports = { register, login }
+const addCourseProvider = async (req, res) => {
+
+    try {
+        const { name, email, password, role } = req.body;
+
+        const hashedPassword = await bcrypt.hash(password, 10)
+
+        const newCourseProvider = new UserModel({
+            name, email, password: hashedPassword, role
+        })
+
+        await newCourseProvider.save();
+
+        res.status(200).json({ message: `new user created with name , ${name}` })
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "unable to create the user" });
+    }
+
+
+
+}
+
+module.exports = { register, login, addCourseProvider }

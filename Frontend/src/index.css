@@ -1,0 +1,35 @@
+/* src/styles/global.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global Form Styling */
+form {
+    @apply space-y-4;
+}
+
+input,
+select,
+textarea {
+    @apply w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none;
+    /* Added box-sizing for consistent width */
+    box-sizing: border-box;
+}
+
+label {
+    @apply block mb-2 text-sm font-medium text-gray-700;
+}
+
+button[type="submit"] {
+    @apply w-full px-4 py-2 text-white bg-orange-400 rounded-md hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-white;
+}
+
+/* Center the form container */
+.form-container {
+    @apply flex items-center justify-center min-h-screen bg-gray-100;
+}
+
+/* Form card styling */
+.form-card {
+    @apply w-full max-w-md p-8 bg-white rounded shadow-lg;
+}
