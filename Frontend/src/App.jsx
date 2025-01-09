@@ -10,7 +10,8 @@ import Footer from './components/common/Footer/Footer'
 import UserDashBoard from './components/user/UserDashBoard/UserDashBoard'
 import AdminDashBoard from './components/Admin/AdminDashBaord/AdminDashBoard'
 import CourseProviderDashBaord from './components/CourseProviders/CourseProviderDashBoard'
-import CourseProviderDetails from './components/Admin/CourseProviderDetails/CourseProviderDetails'
+import AddCourseProviders from './components/Admin/AddCourseProviders/AddCourseProviders'
+import ViewUsers from './components/Admin/VIewUsers/ViewUsers'
 
 function App() {
 
@@ -25,8 +26,11 @@ function App() {
             {
               user.role === 'admin' && (
                 <>
+                  <Route path='/' element={<LandingPage />} />
                   <Route path='/adminDashBoard' element={<AdminDashBoard />} />
-                  <Route path='/courseProviderDetails' element={<CourseProviderDetails />} />
+                  <Route path='/add-CourseProviders' element={<AddCourseProviders />} />
+                  <Route path='/view-users' element={<ViewUsers />} />
+
                 </>
               )
             }
@@ -38,9 +42,9 @@ function App() {
               )
             }
             {
-              user.role === "user" && (
+              user.role === "student" && (
                 <>
-                  <Route path='/userDashBoard' element={<UserDashBoard />} />
+                  <Route path='/studentDashBoard' element={<UserDashBoard />} />
                 </>
               )
             }
