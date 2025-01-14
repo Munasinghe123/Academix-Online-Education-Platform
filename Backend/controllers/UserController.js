@@ -74,8 +74,20 @@ const addCourseProvider = async (req, res) => {
         res.status(500).json({ message: "unable to create the user" });
     }
 
+}
+const getAllUsers = async (req, res) => {
 
+    let users
+    try {
 
+        users = await UserModel.find();
+        console.log("all users", users)
+
+    } catch (err) {
+        console.log(err);
+    }
+    res.status(200).json(users);
 }
 
-module.exports = { register, login, addCourseProvider }
+
+module.exports = { register, login, addCourseProvider, getAllUsers }
