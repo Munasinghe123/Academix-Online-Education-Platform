@@ -9,6 +9,9 @@ const UserSchema = mongoose.Schema({
         type: String,
         enum: ["admin", "student", "courseProvider"],
         default: "student"
+    },
+    photo: {
+        type: String
     }
 
 })

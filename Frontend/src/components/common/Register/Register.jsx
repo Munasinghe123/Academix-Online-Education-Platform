@@ -11,15 +11,30 @@ function Register() {
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
+    const [photo, setPhoto] = useState(null);
 
     const submitRegister = async (event) => {
 
         event.preventDefault();
 
-        const newUser = {
-            name, email, password
-        }
-        const response = await axios.post(`http://localhost:7001/api/users/register`, newUser)
+        // const newUser = {
+        //     name, email, password
+        // }
+
+        const formData = new FormData();
+
+        formData.append("name", name)
+        formData.append("password", password)
+        formData.append("email", email)
+        formData.append("photo", photo)
+
+
+        const response = await axios.post(`http://localhost:7001/api/users/register`, formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            })
 
         if (response.status === 200) {
             alert('Registered successfully');
@@ -28,6 +43,10 @@ function Register() {
             alert("Couldnt register")
             console.log(response.err);
         }
+    }
+
+    const photoUpload = (e) => {
+        setPhoto(e.target.files[0]);
     }
 
 
@@ -52,6 +71,14 @@ function Register() {
                     <input type='email' name='email' id='email'
                         value={email}
                         onChange={(e) => setEmail(e.target.value)} /> <br /><br />
+
+                    <label htmlFor='photo'>Profile Picture</label>
+                    <input
+                        type='file'
+                        accept='*/image'
+                        name='photo'
+                        onChange={photoUpload}
+                    />
 
                     <button type='submit'>Register</button>
                 </form>

@@ -22,12 +22,13 @@ function App() {
     <>
       <Header />
       <Routes>
+        <Route path='/' element={<LandingPage />} />
         {user ? (
           <>
             {
               user.role === 'admin' && (
                 <>
-                  <Route path='/' element={<LandingPage />} />
+
                   <Route path='/adminDashBoard' element={<AdminDashBoard />} />
                   <Route path='/add-CourseProviders' element={<AddCourseProviders />} />
                   <Route path='/ViewCourseProviders' element={<ViewCourseProviders />} />
