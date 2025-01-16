@@ -1,72 +1,141 @@
-import React, { useState } from 'react'
-
+import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function AddCourseProviders() {
 
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [role, setRole] = useState('')
+    const navigate = useNavigate();
+
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [role, setRole] = useState('');
+    const [photo, setPhoto] = useState(null);
 
     const addCourseProvider = async (event) => {
-
         event.preventDefault();
 
-        const formData = {
-            name, email, password, role
+        if (!name || !email || !password || !role || !photo) {
+            alert("All fields are required!");
+            return;
         }
 
-        const token = localStorage.getItem('token');
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("email", email);
+        formData.append("password", password);
+        formData.append("role", role);
+        formData.append("photo", photo);
 
-        const response = await axios.post(`http://localhost:7001/api/users/addCourseProvider`, formData, {
-            headers: {
-                Authorization: `Bearer ${token}`
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await axios.post(
+                `http://localhost:7001/api/users/addCourseProvider`,
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }
+            );
+
+            if (response.status === 200) {
+                alert('Course Provider created successfully');
+
+                navigate('/ViewCourseProviders');
+            } else {
+                alert('Failed to create course provider');
             }
-        })
-
-        if (response.status === 200) {
-            alert('Course Provider created successfully')
-        } else {
-            alert("Failed to create course provier")
+        } catch (error) {
+            console.error('Error creating course provider:', error);
+            alert('An error occurred. Please try again.');
         }
-    }
+    };
+
+    const handleFileChange = (e) => {
+        // const file = e.target.files[0];
+        // if (file) {
+        //     if (file.size > 5 * 1024 * 1024) {
+        //         // File size validation (5 MB max)
+        //         alert('File size must be less than 5 MB');
+        //         return;
+        //     }
+        //     setPhoto(file);
+        // }
+        setPhoto(e.target.files[0]);
+    };
 
     return (
-        <div className='form-container'>
-            <div className='form-card'>
-                <h1 className='mb-6 text-2xl font-bold text-center text-blue-600'>Add Course Providers</h1>
+        <div className="form-container">
+            <div className="form-card">
+                <h1 className="mb-6 text-2xl font-bold text-center text-orange-600">
+                    Add Course Providers
+                </h1>
 
-                <form className='addusers-form' onSubmit={addCourseProvider}>
-
+                <form className="addusers-form" onSubmit={addCourseProvider}>
                     <label>Name</label>
-                    <input type='text' name="name"
+                    <input
+                        type="text"
+                        name="name"
                         value={name}
-                        onChange={(e) => setName(e.target.value)} /><br /><br />
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                    />
+                    <br />
+                    <br />
 
                     <label>Email</label>
-                    <input type='Email' name="Email"
+                    <input
+                        type="email"
+                        name="email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)} /><br /><br />
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                    <br />
+                    <br />
 
                     <label>Password</label>
-                    <input type='password' name="password"
+                    <input
+                        type="password"
+                        name="password"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)} /><br /><br />
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                    <br />
+                    <br />
+
+                    <label htmlFor="picture">Profile Picture</label>
+                    <input
+                        type="file"
+                        name="picture"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        required
+                    />
+                    <br />
+                    <br />
 
                     <label>Role</label>
                     <select
                         value={role}
-                        onChange={(e) => setRole(e.target.value)}>
+                        onChange={(e) => setRole(e.target.value)}
+                        required
+                    >
                         <option value="">Select the role</option>
                         <option value="courseProvider">Course Provider</option>
-                    </select> <br /><br />
+                    </select>
+                    <br />
+                    <br />
 
-                    <button type='submit'>Add Course Provider</button>
+                    <button type="submit">Add Course Provider</button>
                 </form>
             </div>
         </div>
-    )
+    );
 }
 
 export default AddCourseProviders;

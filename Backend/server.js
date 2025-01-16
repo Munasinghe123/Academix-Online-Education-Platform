@@ -2,14 +2,20 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const cors = require('cors');
+const path = require('path')
 
 const app = express();
 
 const userRoutes = require('./routes/UserRoutes');
 
 
+//middleware
 app.use(cors());
 app.use(express.json());
+
+// Serve static files for uploads
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 //routes
 app.use('/api/users/', userRoutes);

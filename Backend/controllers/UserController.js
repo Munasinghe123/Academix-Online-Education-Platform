@@ -9,10 +9,12 @@ const register = async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
+        const photo = req.file ? req.file.filename : null;
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = new UserModel({
-            name, password: hashedPassword, email
+            name, password: hashedPassword, email, photo
         });
 
         await newUser.save();
@@ -59,10 +61,14 @@ const addCourseProvider = async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
 
+        console.log("Request body:", req.body);
+
+        const photo = req.file ? req.file.filename : null;
+
         const hashedPassword = await bcrypt.hash(password, 10)
 
         const newCourseProvider = new UserModel({
-            name, email, password: hashedPassword, role
+            name, email, password: hashedPassword, role, photo
         })
 
         await newCourseProvider.save();
@@ -89,5 +95,24 @@ const getAllUsers = async (req, res) => {
     res.status(200).json(users);
 }
 
+const getUserById = async (req, res) => {
+    const id = req.params.id;
 
-module.exports = { register, login, addCourseProvider, getAllUsers }
+    let user;
+
+    try {
+        user = await UserModel.findById(id)
+
+    } catch (err) {
+        console.log(err)
+    }
+
+    if (!user) {
+        res.status(404).json({ message: "no users" })
+    }
+    console.log("user details", user)
+
+    res.status(200).json({ user })
+}
+
+module.exports = { register, login, addCourseProvider, getAllUsers, getUserById }

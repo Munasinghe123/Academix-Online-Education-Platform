@@ -33,7 +33,7 @@ function Login() {
         if (decode.role === "student") {
             navigate("/studentDashBoard");
         } else if (decode.role === "courseProvider") {
-            navigate("/courseProviderDashBaord");
+            navigate("/CourseProviderDashBaord");
         } else if (decode.role === "admin") {
             navigate("/adminDashBoard");
         }
@@ -42,7 +42,7 @@ function Login() {
     return (
         <div className="form-container">
             <div className="form-card">
-                <h1 className="mb-6 text-2xl font-bold text-center text-blue-600">
+                <h1 className="mb-6 text-2xl font-bold text-center text-orange-600">
                     Login
                 </h1>
 

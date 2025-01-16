@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 function ViewStudents() {
     const [users, setUsers] = useState([]);
@@ -36,7 +37,9 @@ function ViewStudents() {
                     <thead className="bg-blue-600 text-white">
                         <tr>
                             <th className="px-6 py-3 text-left text-sm font-semibold">Name</th>
+                            <th className="px-6 py-3 text-left text-sm font-semibold">Photo</th>
                             <th className="px-6 py-3 text-left text-sm font-semibold">Email</th>
+                            <th className="px-6 py-3 text-left text-sm font-semibold">operation</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -48,12 +51,29 @@ function ViewStudents() {
                                         } hover:bg-blue-100`}
                                 >
                                     <td className="px-6 py-4 text-gray-700">{student.name}</td>
+                                    <td className="px-6 py-4 text-gray-700">
+                                        <img
+                                            src={`http://localhost:7001/uploads/${student.photo}`}
+                                            alt={student.name}
+                                            className="h-12 w-12 object-cover border-gray-300 shadow-sm"
+                                        />
+                                    </td>
                                     <td className="px-6 py-4 text-gray-700">{student.email}</td>
+                                    <td className="px-6 py-4">
+                                        <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 transition duration-300">
+                                            Delete
+                                        </button>
+                                        <Link>
+                                            <button className="bg-green-500 text-white px-4 py-2 rounded ml-2 hover:bg-green-700 transition duration-300">
+                                                Update
+                                            </button>
+                                        </Link>
+                                    </td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={2} className="px-6 py-4 text-center text-gray-500">
+                                <td colSpan={3} className="px-6 py-4 text-center text-gray-500">
                                     No students found.
                                 </td>
                             </tr>
