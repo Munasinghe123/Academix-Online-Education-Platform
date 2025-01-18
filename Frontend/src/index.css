@@ -31,5 +31,9 @@ button[type="submit"] {
 
 /* Form card styling */
 .form-card {
-    @apply w-full max-w-md p-8 bg-white rounded shadow-lg;
+    @apply w-full max-w-md p-8 bg-white rounded shadow-lg mt-[150px] mb-7;
+}
+
+h1 {
+    @apply mb-6 text-2xl font-bold text-center text-orange-600
 }

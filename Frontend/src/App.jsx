@@ -13,6 +13,8 @@ import CourseProviderDashBaord from './components/CourseProviders/CourseProvider
 import AddCourseProviders from './components/Admin/AddCourseProviders/AddCourseProviders'
 import ViewCourseProviders from './components/Admin/VIewUsers/ViewCourseProviders/ViewCourseProviders'
 import ViewStudents from './components/Admin/VIewUsers/ViewStudents/ViewStudents'
+import AddCourses from './components/Admin/courses/AddCourses/AddCourses'
+import ViewCourses from './components/Admin/courses/ViewCourses/ViewCourses'
 
 function App() {
 
@@ -33,6 +35,8 @@ function App() {
                   <Route path='/add-CourseProviders' element={<AddCourseProviders />} />
                   <Route path='/ViewCourseProviders' element={<ViewCourseProviders />} />
                   <Route path='/ViewStudents' element={<ViewStudents />} />
+                  <Route path='/add-courses' element={<AddCourses />} />
+                  <Route path='/view-courses' element={<ViewCourses />} />
                 </>
               )
             }

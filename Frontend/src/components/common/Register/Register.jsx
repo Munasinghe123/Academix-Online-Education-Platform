@@ -53,7 +53,7 @@ function Register() {
     return (
         <div className='form-container'>
             <div className='form-card'>
-                <h1 className='mb-6 text-2xl font-bold text-center text-orange-600'>Register</h1>
+                <h1 >Register</h1>
 
                 <form className='register-form' onSubmit={submitRegister}>
 
