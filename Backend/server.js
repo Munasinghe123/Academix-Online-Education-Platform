@@ -7,6 +7,7 @@ const path = require('path')
 const app = express();
 
 const userRoutes = require('./routes/UserRoutes');
+const courseRoutes = require('./routes/CourseRoutes');
 
 
 //middleware
@@ -19,6 +20,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 //routes
 app.use('/api/users/', userRoutes);
+app.use('/api/courses/', courseRoutes)
 
 
 // Database Connection

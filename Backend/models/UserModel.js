@@ -12,7 +12,8 @@ const UserSchema = mongoose.Schema({
     },
     photo: {
         type: String
-    }
+    },
+    enrolledCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
 
 })
 

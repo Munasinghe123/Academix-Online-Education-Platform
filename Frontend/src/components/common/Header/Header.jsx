@@ -60,9 +60,9 @@ function Header() {
                 </div>
 
                 <div className="flex items-center ml-5">
-                    <h1 className="text-black mr-5">
+                    <h2 className="text-black mr-5">
                         Welcome, {user ? user.name : 'Guest'}
-                    </h1>
+                    </h2>
 
                     {photo ? (
                         <img
