@@ -13,8 +13,10 @@ import CourseProviderDashBaord from './components/CourseProviders/CourseProvider
 import AddCourseProviders from './components/Admin/AddCourseProviders/AddCourseProviders'
 import ViewCourseProviders from './components/Admin/VIewUsers/ViewCourseProviders/ViewCourseProviders'
 import ViewStudents from './components/Admin/VIewUsers/ViewStudents/ViewStudents'
-import AddCourses from './components/Admin/courses/AddCourses/AddCourses'
-import ViewCourses from './components/Admin/courses/ViewCourses/ViewCourses'
+import AddCourses from './components/Admin-CoureProvider-Common/AddCourses/AddCourses'
+import ViewCourses from './components/common/Courses/ViewCourses'
+import UpdateCourses from './components/Admin-CoureProvider-Common/UpdateCourses/UpdateCourses'
+import CourseDetails from './components/common/Courses/CourseDetails'
 
 function App() {
 
@@ -25,6 +27,9 @@ function App() {
       <Header />
       <Routes>
         <Route path='/' element={<LandingPage />} />
+        <Route path='/register' element={<Register />} />
+        <Route path='/ViewCourses' element={<ViewCourses />} />
+        <Route path='/CourseDetails/:id' element={<CourseDetails />} />
         {user ? (
           <>
             {
@@ -37,6 +42,7 @@ function App() {
                   <Route path='/ViewStudents' element={<ViewStudents />} />
                   <Route path='/add-courses' element={<AddCourses />} />
                   <Route path='/view-courses' element={<ViewCourses />} />
+                  <Route path='/updateCourse/:id' element={<UpdateCourses />} />
                 </>
               )
             }
@@ -44,6 +50,7 @@ function App() {
               user.role === "courseProvider" && (
                 <>
                   <Route path='/CourseProviderDashBaord' element={<CourseProviderDashBaord />} />
+                  <Route path='/updateCourse/:id' element={<UpdateCourses />} />
                 </>
               )
             }

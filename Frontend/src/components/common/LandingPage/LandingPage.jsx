@@ -39,7 +39,11 @@ function LandingPage() {
                         <Link to="/register">
                             <button className="btn primary-btn">Get Started for Free</button>
                         </Link>
-                        <button className="btn secondary-btn">Explore Courses</button>
+
+                        <Link to='/ViewCourses'>
+                            <button className="btn secondary-btn">Explore Courses</button>
+                        </Link>
+
                     </motion.div>
                 </div>
                 <motion.div

@@ -166,7 +166,7 @@ body {
     margin: 10px 0 0;
 }
 
-/* Animations */
+/* Animations
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -216,4 +216,4 @@ body {
     50% {
         transform: translateY(-10px);
     }
-}
+} */
