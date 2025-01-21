@@ -35,7 +35,52 @@ const createcourse = async (req, res) => {
     } catch (err) {
         console.log(err);
     }
-
 }
 
-module.exports = { createcourse }
+const getAllCourses = async (req, res) => {
+
+    let Courses;
+
+    try {
+
+        Courses = await CourseModel.find();
+
+    } catch (err) {
+        console.log(err);
+    }
+
+    console.log(Courses);
+    res.status(200).json(Courses);
+}
+
+const getCourseById = async (req, res) => {
+
+    let id = req.params.id;
+
+    let course
+
+    try {
+        course = await CourseModel.findById(id);
+
+        console.log("course details", course)
+    } catch (err) {
+        console.log(err);
+    }
+
+    res.status(200).json(course)
+}
+
+const updateCourse = async (req, res) => {
+
+    let id = req.params.id;
+
+try {
+
+    let course = await CourseModel.findById(id);
+
+} catch (error) {
+
+}
+}
+
+module.exports = { createcourse, getAllCourses, getCourseById, updateCourse }
