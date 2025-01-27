@@ -17,6 +17,7 @@ import AddCourses from './components/Admin-CoureProvider-Common/AddCourses/AddCo
 import ViewCourses from './components/common/Courses/ViewCourses'
 import UpdateCourses from './components/Admin-CoureProvider-Common/UpdateCourses/UpdateCourses'
 import CourseDetails from './components/common/Courses/CourseDetails'
+import Profilepage from './components/user/ProfilePage/Profilepage'
 
 function App() {
 
@@ -30,6 +31,7 @@ function App() {
         <Route path='/register' element={<Register />} />
         <Route path='/ViewCourses' element={<ViewCourses />} />
         <Route path='/CourseDetails/:id' element={<CourseDetails />} />
+        <Route path='/profile' element={<Profilepage />} />
         {user ? (
           <>
             {
