@@ -44,7 +44,7 @@ function Updateprofile() {
         try {
             const token = localStorage.getItem("token");
             const response = await axios.put(
-                `http://localhost:7001/api/users/updateUser/${id}`,
+                `http://localhost:7001/api/users/Updateprofile/${id}`,
                 formData,
                 {
                     headers: {
