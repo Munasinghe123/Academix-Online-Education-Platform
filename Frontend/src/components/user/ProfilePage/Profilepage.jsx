@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useContext } from 'react';
 import { AuthContext } from '../../../context/AuthContext';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Profilepage() {
-    const { user } = useContext(AuthContext);
-    const [photo, setPhoto] = useState(null);
+    const navigate = useNavigate();
 
-    const [name, setName] = useState("")
-    const [email, setEmail] = useState("")
+    const { user, logout } = useContext(AuthContext);  // Assuming you have setUser in your context
+    const [photo, setPhoto] = useState(null);
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
 
     useEffect(() => {
         const fetchPhoto = async () => {
@@ -18,13 +19,13 @@ function Profilepage() {
                     const token = localStorage.getItem("token");
                     const response = await axios.get(`http://localhost:7001/api/users/getUserById/${user.id}`, {
                         headers: {
-                            Authorization: `Bearer ${token}`
-                        }
+                            Authorization: `Bearer ${token}`,
+                        },
                     });
 
                     setPhoto(response.data.user.photo);
-                    setName(response.data.user.name)
-                    setEmail(response.data.user.email)
+                    setName(response.data.user.name);
+                    setEmail(response.data.user.email);
                 } catch (err) {
                     console.error(err);
                 }
@@ -33,6 +34,27 @@ function Profilepage() {
 
         fetchPhoto();
     }, [user]);
+
+    const deleteProfile = async () => {
+        try {
+            const token = localStorage.getItem("token");
+
+            const response = await axios.delete(`http://localhost:7001/api/users/deleteUser/${user.id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (response.status === 200) {
+                alert("Account deleted");
+                localStorage.removeItem("token");
+                logout();
+                navigate('/login'); // Redirect to login
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     if (!user) {
         return <p className="text-center mt-10 text-gray-500">Loading...</p>;
@@ -55,12 +77,18 @@ function Profilepage() {
                 <p className="text-gray-700 text-lg text-center">User email: <strong>{email}</strong></p>
 
                 <button
+                    onClick={deleteProfile} // Remove user.id from here
                     className="bg-red-500 text-white w-28 mt-4 h-10 rounded-md hover:bg-red-700 transition-colors duration-300 mb-2"
-                >Delete Profile</button>
+                >
+                    Delete Profile
+                </button>
 
                 <Link to={`/UpdateProfile/${user.id}`}>
                     <button
-                        className="bg-green-500 text-white w-28 ml-5 h-10 rounded-md hover:bg-green-700 transition-colors duration-300">Update profile</button>
+                        className="bg-green-500 text-white w-28 ml-5 h-10 rounded-md hover:bg-green-700 transition-colors duration-300"
+                    >
+                        Update profile
+                    </button>
                 </Link>
             </div>
         </div>
