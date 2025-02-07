@@ -1,18 +1,23 @@
 const express = require('express');
-const mongoose = require('mongoose');
-require('dotenv').config();
 const cors = require('cors');
-const path = require('path')
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+require('dotenv').config();
+const path = require('path');
+const mongoose = require('mongoose');
 
 const app = express();
+
+// ✅ Correct middleware usage
+app.use(cors({ credentials: true, origin: "http://localhost:5174" })); // Frontend URL
+app.use(express.json()); // JSON parser
+app.use(cookieParser()); // Parses cookies
+app.use(bodyParser.urlencoded({ extended: true })); // Parses form data
+
 
 const userRoutes = require('./routes/UserRoutes');
 const courseRoutes = require('./routes/CourseRoutes');
 
-
-//middleware
-app.use(cors());
-app.use(express.json());
 
 // Serve static files for uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

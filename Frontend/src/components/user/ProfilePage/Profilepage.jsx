@@ -7,7 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 function Profilepage() {
     const navigate = useNavigate();
 
-    const { user, logout } = useContext(AuthContext);  
+    const { user, logout } = useContext(AuthContext);
     const [photo, setPhoto] = useState(null);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -16,10 +16,10 @@ function Profilepage() {
         const fetchPhoto = async () => {
             if (user && user.id) {
                 try {
-                    const token = localStorage.getItem("token");
+                    const accessToken = localStorage.getItem("accessToken");
                     const response = await axios.get(`http://localhost:7001/api/users/getUserById/${user.id}`, {
                         headers: {
-                            Authorization: `Bearer ${token}`,
+                            Authorization: `Bearer ${accessToken}`,
                         },
                     });
 
@@ -49,7 +49,7 @@ function Profilepage() {
                 alert("Account deleted");
                 localStorage.removeItem("token");
                 logout();
-                navigate('/login'); 
+                navigate('/login');
             }
         } catch (err) {
             console.log(err);

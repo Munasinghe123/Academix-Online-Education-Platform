@@ -17,18 +17,18 @@ function Login() {
 
         const user = { name, password };
 
-        const response = await axios.post(
-            `http://localhost:7001/api/users/login`,
-            user
-        );
+        const response = await axios.post('http://localhost:7001/api/users/login', user, {
+            withCredentials: true, // Ensure credentials (cookies) are sent with the request
+        });
 
-        const token = response.data.token;
-        console.log("token", token);
 
-        login(token);
+        const accessToken = response.data.accessToken;
+        console.log("accessToken", accessToken);
 
-        const decode = jwtDecode(token);
-        console.log("decoded token", decode);
+        login(accessToken);
+
+        const decode = jwtDecode(accessToken);
+        console.log("decoded accessToken", decode);
 
         if (decode.role === "student") {
             navigate("/studentDashBoard");
