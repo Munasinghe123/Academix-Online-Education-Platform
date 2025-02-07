@@ -7,7 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 function Profilepage() {
     const navigate = useNavigate();
 
-    const { user, logout } = useContext(AuthContext);  // Assuming you have setUser in your context
+    const { user, logout } = useContext(AuthContext);  
     const [photo, setPhoto] = useState(null);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -49,7 +49,7 @@ function Profilepage() {
                 alert("Account deleted");
                 localStorage.removeItem("token");
                 logout();
-                navigate('/login'); // Redirect to login
+                navigate('/login'); 
             }
         } catch (err) {
             console.log(err);
