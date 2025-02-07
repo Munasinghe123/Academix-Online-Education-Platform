@@ -29,33 +29,78 @@ const register = async (req, res) => {
 }
 
 const login = async (req, res) => {
-
     try {
         const { name, password } = req.body;
 
         const user = await UserModel.findOne({ name });
 
         if (!user) {
-            res.status(404).json({ message: "no such users" })
+            return res.status(404).json({ message: "No such users" });
         }
 
-        const hashedPassword = await bcrypt.compare(password, user.password);
+        const isPasswordMatch = await bcrypt.compare(password, user.password);
 
-        if (!hashedPassword) {
-            res.status(404).json({ message: "passwords dosent match" })
+        if (!isPasswordMatch) {
+            return res.status(404).json({ message: "Passwords don't match" });
         }
 
-        const token = jwt.sign({ id: user._id, name: user.name, role: user.role, email: user.email },
+        // Issue the access token (expires in 1 hour)
+        const accessToken = jwt.sign(
+            { id: user._id, name: user.name, role: user.role, email: user.email },
             process.env.JWT_SECRET,
-            { expiresIn: "1h" })
+            { expiresIn: "1m" }
+        );
 
-        res.status(200).json({ token });
-        console.log(token);
+        // Issue the refresh token (expires in 7 days)
+        const refreshToken = jwt.sign(
+            { id: user._id, name: user.name, role: user.role, email: user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+        );
 
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: false, // Local development
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            path: '/', // Ensure cookie is available on the root path
+        });
+
+
+        res.status(200).json({ accessToken });
     } catch (err) {
         console.log(err);
+        res.status(500).json({ message: "Internal server error" });
     }
-}
+};
+const refreshAccessToken = async (req, res) => {
+    try {
+        const refreshToken = req.cookies.refreshToken; // Get the refresh token from cookies
+
+        if (!refreshToken) {
+            return res.status(401).json({ message: "No refresh token provided." });
+        }
+
+        // Verify the refresh token
+        jwt.verify(refreshToken, process.env.JWT_SECRET, async (err, decoded) => {
+            if (err) {
+                return res.status(403).json({ message: "Invalid or expired refresh token." });
+            }
+
+            // Create a new access token
+            const newAccessToken = jwt.sign(
+                { id: decoded.id, name: decoded.name, role: decoded.role, email: decoded.email },
+                process.env.JWT_SECRET,
+                { expiresIn: "1h" }
+            );
+
+            res.status(200).json({ accessToken: newAccessToken });
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 
 const addCourseProvider = async (req, res) => {
 
@@ -177,4 +222,4 @@ const deleteUser = async (req, res) => {
     }
 }
 
-module.exports = { register, login, addCourseProvider, getAllUsers, getUserById, UpdateProfile, deleteUser }
+module.exports = { register, login, refreshAccessToken, addCourseProvider, getAllUsers, getUserById, UpdateProfile, deleteUser }
