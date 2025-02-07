@@ -26,29 +26,31 @@ const AuthProvider = ({ children }) => {
   const login = (accessToken) => {
     localStorage.setItem('accessToken', accessToken);
     setAccessToken(accessToken); // Set state
-    const decoded = jwtDecode(accessToken); // Use the passed token here
+    const decoded = jwtDecode(token); // Use the passed token here
     setUser(decoded);
   };
 
-  const logout = () => {
-    localStorage.removeItem('accessToken');
-    setAccessToken(null);
-    setUser(null);
-    navigate('/');
+  const logout = async () => {
+    try {
+      await axios.post("http://localhost:7001/api/users/logout", {}, { withCredentials: true });
+
+      localStorage.removeItem("accessToken");
+      setAccessToken(null); // Ensure token is removed from state
+      setUser(null);
+
+      navigate('/');
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   const refreshAccessToken = async () => {
     try {
-      const response = await axios.post(`http://localhost:7001/api/users/refresh`, {
-        // method: 'POST',
-        withCredentials: true, // Ensure the refresh token in the cookie is sent
+      const response = await axios.post(`http://localhost:7001/api/users/refresh`, {}, {
+        withCredentials: true, // Ensure cookies are sent
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to refresh access token');
-      }
-
-      const { accessToken: newAccessToken } = await response.json();
+      const { accessToken: newAccessToken } = response.data;
       setAccessToken(newAccessToken);
       localStorage.setItem('accessToken', newAccessToken);
       const decoded = jwtDecode(newAccessToken);
@@ -60,6 +62,7 @@ const AuthProvider = ({ children }) => {
       logout(); // If refresh fails, log out the user
     }
   };
+
 
   const isAuthenticated = !!user;
 
