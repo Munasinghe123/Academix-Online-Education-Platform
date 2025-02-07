@@ -1,4 +1,4 @@
-const { register, login, refreshAccessToken, addCourseProvider, getAllUsers, getUserById, UpdateProfile, deleteUser } = require('../controllers/UserController');
+const { register, login, logoutUser, refreshAccessToken, addCourseProvider, getAllUsers, getUserById, UpdateProfile, deleteUser } = require('../controllers/UserController');
 const express = require('express')
 const router = express.Router();
 
@@ -7,6 +7,7 @@ const verifyRole = require('../middleWare/RoleMiddleWare');
 const upload = require('../middleWare/MutlerConfig');
 
 router.post('/login', login)
+router.post('/logout', logoutUser)
 router.post('/register', upload.single('photo'), register);
 
 router.post('/refesh', verifyToken, verifyRole("admin", "student", "courseProvider"), refreshAccessToken);

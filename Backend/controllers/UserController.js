@@ -72,6 +72,12 @@ const login = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
+
+const logoutUser = (req, res) => {
+    res.clearCookie('refreshToken', { httpOnly: true, secure: true, sameSite: 'Strict' }); // Clear refresh token cookie
+    return res.status(200).json({ message: 'Logout successful' });
+};
+
 const refreshAccessToken = async (req, res) => {
     try {
         const refreshToken = req.cookies.refreshToken; // Get the refresh token from cookies
@@ -222,4 +228,4 @@ const deleteUser = async (req, res) => {
     }
 }
 
-module.exports = { register, login, refreshAccessToken, addCourseProvider, getAllUsers, getUserById, UpdateProfile, deleteUser }
+module.exports = { register, login, logoutUser, refreshAccessToken, addCourseProvider, getAllUsers, getUserById, UpdateProfile, deleteUser }
