@@ -3,6 +3,7 @@ const express = require('express')
 const router = express.Router();
 
 const verifyToken = require('../middleWare/AuthMiddleWare')
+const verifyRefreshToken = require('../middleWare/VerifyRefreshTokens')
 const verifyRole = require('../middleWare/RoleMiddleWare');
 const upload = require('../middleWare/MutlerConfig');
 
@@ -10,7 +11,7 @@ router.post('/login', login)
 router.post('/logout', logoutUser)
 router.post('/register', upload.single('photo'), register);
 
-router.post('/refesh', verifyToken, verifyRole("admin", "student", "courseProvider"), refreshAccessToken);
+router.post('/refresh', verifyRefreshToken,refreshAccessToken);
 
 router.post('/addCourseProvider', verifyToken, verifyRole("admin"), upload.single('photo'), addCourseProvider)
 router.get('/getAllUsers', verifyToken, verifyRole("admin"), getAllUsers)
