@@ -19,6 +19,7 @@ import UpdateCourses from './components/Admin-CoureProvider-Common/UpdateCourses
 import CourseDetails from './components/common/Courses/CourseDetails'
 import Profilepage from './components/user/ProfilePage/Profilepage'
 import Updateprofile from './components/user/update/Updateprofile'
+import Cart from './components/common/Cart/Cart'
 
 function App() {
 
@@ -34,6 +35,7 @@ function App() {
         <Route path='/CourseDetails/:id' element={<CourseDetails />} />
         <Route path='/profile' element={<Profilepage />} />
         <Route path='/Updateprofile/:id' element={<Updateprofile />} />
+        <Route path='/cart' element={<Cart />} />
         {user ? (
           <>
             {

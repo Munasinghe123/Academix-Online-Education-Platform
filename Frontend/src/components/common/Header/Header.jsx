@@ -3,26 +3,54 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../../../context/AuthContext';
 import logo from './Academix.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faTimes, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
 function Header() {
     const { user, logout } = useContext(AuthContext);
 
+    //dropdown related
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
     const [isUserSubmenuVisible, setIsUserSubmenuVisible] = useState(false);
     const [isCourseSubmenuVisible, setIsCourseSubmenuVisible] = useState(false);
     const [isRegisterUsersVisible, setIsRegisterUsersVisible] = useState(false);
 
+    //user related
     const [photo, setPhoto] = useState(null);
     const [name, setName] = useState("");
 
+    //course related
     const [courses, setCourses] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
 
+    //cart related
+    const [cartItems, setCartItems] = useState([]);
+
+    //dropdown visibility
     const toggleDropdown = () => {
         setIsDropdownVisible((prev) => !prev);
     };
+
+    //fetch cart items
+    useEffect(() => {
+
+        const fetchItems = async () => {
+            try {
+                const accessToken = localStorage.getItem('accessToken');
+                const response = await axios.get(`http://localhost:7001/api/cart/getAllItems`, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+                    }
+                })
+
+                setCartItems(response.data.cartItems);
+            } catch (err) {
+                console.log(err);
+                // alert("Couldnt get the cart items")
+            }
+        }
+        fetchItems();
+    }, [])
 
     useEffect(() => {
         const fetchUserPhoto = async () => {
@@ -48,7 +76,6 @@ function Header() {
     }, [user]);
 
     useEffect(() => {
-
         const fetchCourses = async () => {
             try {
                 const response = await axios.get(`http://localhost:7001/api/courses/getAllCourses`)
@@ -62,6 +89,7 @@ function Header() {
         fetchCourses();
     }, [])
 
+    //search querry
     const filteredCourses = courses.filter(course =>
         course.courseName.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -133,6 +161,19 @@ function Header() {
                             />
                         </>
                     )}
+
+                    {/*cart icon*/}
+                    <div className="relative ml-6">
+                        <Link to="/cart">
+                            <FontAwesomeIcon icon={faShoppingCart} className="text-2xl text-orange-500 mr-10" />
+                            {cartItems.length > 0 && (
+                                <span className="absolute bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                                    {cartItems.length}
+                                </span>
+                            )}
+                        </Link>
+                    </div>
+
 
                     {user ? (
                         <>
