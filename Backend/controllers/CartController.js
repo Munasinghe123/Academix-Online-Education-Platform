@@ -3,7 +3,7 @@ const userModel = require('../models/UserModel');
 const courseModel = require('../models/CourseModel');
 
 const addToCart = async (req, res) => {
-    const { userId, courseId } = req.body;
+    const { userId, courseId,quantity } = req.body;
 
     try {
         const existingUser = await userModel.findById(userId);
@@ -21,7 +21,7 @@ const addToCart = async (req, res) => {
             return res.status(400).json({ message: "Course already in cart" });
         }
 
-        const newCartItem = new cartModel({ userId, courseId });
+        const newCartItem = new cartModel({ userId, courseId,quantity });
         await newCartItem.save();
 
         res.status(201).json({ message: "Course added to cart", cartItem: newCartItem });

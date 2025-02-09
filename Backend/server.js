@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 
 const app = express();
 
-app.use(cors({ credentials: true, origin: "http://localhost:5174" })); // Frontend URL
+app.use(cors({ credentials: true, origin: "http://localhost:5173" })); // Frontend URL
 app.use(express.json()); // JSON parser
 app.use(cookieParser()); // Parses cookies
 app.use(bodyParser.urlencoded({ extended: true })); // Parses form data
