@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate,useLocation } from 'react-router-dom'
 import { AuthContext } from './context/AuthContext'
 
 import LandingPage from './components/common/LandingPage/LandingPage'
@@ -20,11 +20,17 @@ import CourseDetails from './components/common/Courses/CourseDetails'
 import Profilepage from './components/user/ProfilePage/Profilepage'
 import Updateprofile from './components/user/update/Updateprofile'
 import Cart from './components/common/Cart/Cart'
+import Payment from './components/Payment/Payment'
 
 function App() {
+  const { user } = useContext(AuthContext);
 
-  const { user } = useContext(AuthContext)
+  function PrivateRoute({ children }) {
+    const { user } = useContext(AuthContext);
+    const location = useLocation();
 
+    return user ? children : <Navigate to="/login" state={{ from: location.pathname }} />;
+}
   return (
     <>
       <Header />
@@ -36,9 +42,12 @@ function App() {
         <Route path='/profile' element={<Profilepage />} />
         <Route path='/Updateprofile/:id' element={<Updateprofile />} />
         <Route path='/cart' element={<Cart />} />
+
+        <Route path="/cart" element={<PrivateRoute><Payment /></PrivateRoute>} />
+
         {user ? (
           <>
-            {
+            { 
               user.role === 'admin' && (
                 <>
 

@@ -1,11 +1,20 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
+import { AuthContext } from '../../../context/AuthContext';
+import {CartContext} from '../../../context/CartContext'
+import { useNavigate } from 'react-router-dom';
 
 function CourseDetails() {
+
+    const navigate = useNavigate();
+    const {addToCart}=useContext(CartContext);
+    const {user} = useContext(AuthContext);
     const { id } = useParams();
     const [paymentStatus, setPaymentStatus] = useState(false);
 
+    const[courseId,setCourseId]=useState('')
     const [courseName, setCourseName] = useState('');
     const [courseDescription, setCourseDescription] = useState('');
     const [instructorName, setInstructorName] = useState('');
@@ -21,6 +30,7 @@ function CourseDetails() {
                 const response = await axios.get(`http://localhost:7001/api/courses/getCourseById/${id}`);
                 // const course = response.data.course;
 
+                setCourseId(response.data._id);
                 setCourseName(response.data.courseName);
                 setCourseDescription(response.data.courseDescription);
                 setInstructorName(response.data.instructorName);
@@ -38,6 +48,16 @@ function CourseDetails() {
 
         fetchCourse();
     }, [id]);
+
+    const handleBuyNow = () => {
+        if (!user) {
+            navigate("/login", { state: { from: "/cart" } });
+        } else {
+            navigate("/cart");
+        }
+        const quantity = 1; //default quantity
+        addToCart(courseId,quantity)
+    };
 
     return (
         <div className="flex flex-col min-h-screen bg-gray-50 p-6 mt-20">
@@ -96,9 +116,12 @@ function CourseDetails() {
                     <h2 className="text-2xl font-semibold text-gray-800">Course Price</h2>
                     <p className="mt-2 text-lg font-semibold text-gray-900">${price}</p>
 
-                    <button className="mt-5 w-full sm:w-auto text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 rounded-md px-6 py-3 text-lg font-semibold shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
-                        Buy Now
-                    </button>
+                    {/* buy now button */}
+                        <button onClick={()=>handleBuyNow(courseId)} 
+                        className="mt-5 w-full sm:w-auto text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 rounded-md px-6 py-3 text-lg font-semibold shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+                            Buy Now
+                        </button>
+                  
                 </div>
             </div>
         </div>
