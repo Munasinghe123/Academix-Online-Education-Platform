@@ -18,7 +18,7 @@ function Login() {
         const user = { name, password };
 
         const response = await axios.post('http://localhost:7001/api/users/login', user, {
-            withCredentials: true, // Ensure credentials (cookies) are sent with the request
+            withCredentials: true, 
         });
 
 
