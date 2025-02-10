@@ -37,21 +37,23 @@ function Header() {
         const fetchItems = async () => {
             try {
                 const accessToken = localStorage.getItem('accessToken');
-                const response = await axios.get(`http://localhost:7001/api/cart/getAllItems`, {
+                const response = await axios.get(`http://localhost:7001/api/cart/getCartById/${user.id}`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`
                     }
                 })
 
                 setCartItems(response.data.cartItems);
+                console.log("header - cart items",response.data.cartItems)
             } catch (err) {
                 console.log(err);
                 // alert("Couldnt get the cart items")
             }
         }
         fetchItems();
-    }, [])
+    }, [user])
 
+    //user photo
     useEffect(() => {
         const fetchUserPhoto = async () => {
             if (user && user.id) {
@@ -75,9 +77,11 @@ function Header() {
         fetchUserPhoto();
     }, [user]);
 
+    //course data
     useEffect(() => {
         const fetchCourses = async () => {
             try {
+            
                 const response = await axios.get(`http://localhost:7001/api/courses/getAllCourses`)
 
                 setCourses(response.data);
@@ -162,12 +166,12 @@ function Header() {
                         </>
                     )}
 
-                    {/*cart icon*/}
+                    {/* Cart icon */}
                     <div className="relative ml-6">
                         <Link to="/cart">
-                            <FontAwesomeIcon icon={faShoppingCart} className="text-2xl text-orange-500 mr-10" />
+                            <FontAwesomeIcon icon={faShoppingCart} className="text-2xl text-orange-500" />
                             {cartItems.length > 0 && (
-                                <span className="absolute bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                                <span className="absolute top-[-25px] right-0 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
                                     {cartItems.length}
                                 </span>
                             )}

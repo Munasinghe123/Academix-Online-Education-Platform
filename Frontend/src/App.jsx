@@ -19,8 +19,8 @@ import UpdateCourses from './components/Admin-CoureProvider-Common/UpdateCourses
 import CourseDetails from './components/common/Courses/CourseDetails'
 import Profilepage from './components/user/ProfilePage/Profilepage'
 import Updateprofile from './components/user/update/Updateprofile'
-import Cart from './components/common/Cart/Cart'
-import Payment from './components/Payment/Payment'
+import Cart from './components/PaymentRelated/Cart/Cart'
+import Payment from './components/PaymentRelated/Payment/Payment'
 
 function App() {
   const { user } = useContext(AuthContext);
