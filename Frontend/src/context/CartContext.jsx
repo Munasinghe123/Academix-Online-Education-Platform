@@ -1,39 +1,87 @@
-import React, { createContext, useState, useContext } from 'react';
-import axios from 'axios';
-import { AuthContext } from './AuthContext';
+import { createContext, useState, useEffect, useContext } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "./AuthContext";
+import { useCallback } from "react";
 
 export const CartContext = createContext();
 
-const CartProvider = ({ children }) => {
+const CartProvider = ({ children, userId }) => {
+    const [cartItems, setCartItems] = useState([]);
 
-    const { user } = useContext(AuthContext);
-    const [cart, setCart] = useState([]);
+    const{user}=useContext(AuthContext)
 
+    const navigate=useNavigate();
 
+    //get the cart items
+    const fetchCartItems = async (userId) => {
+        try {
+            if (!userId) return;
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axios.get(`http://localhost:7001/api/cart/getCartById/${userId}`, {
+                headers: { Authorization: `Bearer ${accessToken}` }
+            });
+            setCartItems(response.data.cartItems);
+        } catch (err) {
+            console.error("Error fetching cart items:", err);
+        }
+    };
+    
 
-    const addToCart = async (courseId, quantity) => {
+    //get the cart items after login
+    useEffect(() => {
+        if (user?.id) {
+            console.log("length of cart items in Context",cartItems.length)
+            fetchCartItems(user.id);
+        }else if(!user){
+            setCartItems([])
+        }
+    }, [user]); 
+     
+
+    //adding to the cart
+    const addToCart = async (courseId) => {
+        if (!user) {
+            navigate("/login", { state: { from: "/cart" } });
+            return;
+        }
+    
         try {
             const accessToken = localStorage.getItem("accessToken");
-
-            const response = await axios.post(`http://localhost:7001/api/cart/addToCart`,
-                {
-                    userId: user.id,
-                    courseId,
-                    quantity
-                },
-                {
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                }
+    
+            const response = await axios.post(
+                `http://localhost:7001/api/cart/addToCart`,
+                { userId: user.id, courseId, quantity: 1 },
+                { headers: { Authorization: `Bearer ${accessToken}` } }
             );
+            fetchCartItems(user.id);
+            if(response.status===200){
+                navigate("/cart")
+            }
 
-            setCart(response.data.cartItem);
         } catch (error) {
             console.error("Error adding to cart:", error.response?.data || error.message);
+            alert(error.response.data.message);
         }
     };
 
+    const deleteCourse = async (courseId) => {
+        try {
+            const accessToken = localStorage.getItem("accessToken");
+            await axios.delete(`http://localhost:7001/api/cart/deleteItem/${courseId}`, {
+                headers: { Authorization: `Bearer ${accessToken}` },
+            });
+    
+            // Update the cartItems state after successful deletion
+            setCartItems(prevCartItems => prevCartItems.filter(item => item._id !== courseId));
+    
+        } catch (err) {
+            console.error("Error deleting cart item", err);
+        }
+    };
+    
     return (
-        <CartContext.Provider value={{ cart, addToCart }}>
+        <CartContext.Provider value={{ cartItems, setCartItems, fetchCartItems, addToCart,deleteCourse }}>
             {children}
         </CartContext.Provider>
     );

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../../context/AuthContext';
+import { CartContext } from '../../../context/CartContext';
 import logo from './Academix.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
@@ -8,6 +9,10 @@ import axios from 'axios';
 
 function Header() {
     const { user, logout } = useContext(AuthContext);
+    const { cartItems } = useContext(CartContext);
+
+    //debugging
+    console.log("length of cart items in header",cartItems.length)
 
     //dropdown related
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -23,35 +28,12 @@ function Header() {
     const [courses, setCourses] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
 
-    //cart related
-    const [cartItems, setCartItems] = useState([]);
 
     //dropdown visibility
     const toggleDropdown = () => {
         setIsDropdownVisible((prev) => !prev);
     };
 
-    //fetch cart items
-    useEffect(() => {
-
-        const fetchItems = async () => {
-            try {
-                const accessToken = localStorage.getItem('accessToken');
-                const response = await axios.get(`http://localhost:7001/api/cart/getCartById/${user.id}`, {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`
-                    }
-                })
-
-                setCartItems(response.data.cartItems);
-                console.log("header - cart items",response.data.cartItems)
-            } catch (err) {
-                console.log(err);
-                // alert("Couldnt get the cart items")
-            }
-        }
-        fetchItems();
-    }, [user])
 
     //user photo
     useEffect(() => {
@@ -97,7 +79,6 @@ function Header() {
     const filteredCourses = courses.filter(course =>
         course.courseName.toLowerCase().includes(searchQuery.toLowerCase())
     );
-
 
     return (
         <header className="bg-white text-black py-5 px-10 flex justify-between items-center shadow-md fixed top-0 left-0 w-full h-24 z-50 backdrop-blur-sm">
