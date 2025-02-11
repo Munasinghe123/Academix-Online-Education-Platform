@@ -9,7 +9,10 @@ import axios from 'axios';
 
 function Header() {
     const { user, logout } = useContext(AuthContext);
-    const { cartItems, fetchCartItems } = useContext(CartContext);
+    const { cartItems } = useContext(CartContext);
+
+    //debugging
+    console.log("length of cart items in header",cartItems.length)
 
     //dropdown related
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -31,11 +34,6 @@ function Header() {
         setIsDropdownVisible((prev) => !prev);
     };
 
-    useEffect(() => {
-        if (user) {
-            fetchCartItems(user.id);
-        }
-    }, [user,cartItems]);
 
     //user photo
     useEffect(() => {
@@ -81,7 +79,6 @@ function Header() {
     const filteredCourses = courses.filter(course =>
         course.courseName.toLowerCase().includes(searchQuery.toLowerCase())
     );
-
 
     return (
         <header className="bg-white text-black py-5 px-10 flex justify-between items-center shadow-md fixed top-0 left-0 w-full h-24 z-50 backdrop-blur-sm">

@@ -1,51 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
+import { CartContext } from "../../../context/CartContext";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 function Cart() {
-    const [cartInfo, setCartInfo] = useState([]);
-    const { user } = useContext(AuthContext);
-    const [cartUpdated, setCartUpdated] = useState(false);
-
-    useEffect(() => {
-        const fetchCartInfo = async () => {
-            try {
-                const accessToken = localStorage.getItem("accessToken");
-                const response = await axios.get(`http://localhost:7001/api/cart/getCartById/${user.id}`, {
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                });
-
-                setCartInfo(response.data.cartItems);
-            } catch (err) {
-                console.error("Error fetching cart items", err);
-            }
-        };
-
-        fetchCartInfo();
-    }, [user, cartUpdated]);
-
    
-    // Delete course from cart
-    const deleteCourse = async (courseId) => {
-        try {
-            const accessToken = localStorage.getItem("accessToken");
-            await axios.delete(`http://localhost:7001/api/cart/deleteItem/${courseId}`, {
-                headers: { Authorization: `Bearer ${accessToken}` },
-            });
-
-            setCartInfo((prevCart) => prevCart.filter((item) => item._id !== courseId));
-        } catch (err) {
-            console.error("Error deleting cart item", err);
-        }
-    };
+    const{deleteCourse,cartItems}=useContext(CartContext);
 
     return (
         <div className="h-screen">
             <h1 className="mt-40">Cart</h1>
             <div className="flex flex-col gap-4 justify-center items-center">
-                {cartInfo.map((info, index) => (
+                {cartItems.map((info, index) => (
                     <div key={index} className="flex flex-col border border-gray-300 rounded-lg shadow-lg bg-white p-4 w-60 items-center">
                         <h2 className="text-lg font-semibold">{info.courseId.courseName}</h2>
 
@@ -59,10 +27,16 @@ function Cart() {
                             <h4 className="font-semibold">Quantity:</h4>
                             <p>{info.quantity}</p>
                         </div>
+                                        <button 
+                    className="text-orange-500 hover:text-orange-600" 
+                    onClick={() => {
+                        deleteCourse(info._id);
+                        setCartInfo(prevCart => prevCart.filter(item => item._id !== info._id)); // Remove item from UI
+                    }}
+                >
+                    <FontAwesomeIcon icon={faTrash} />
+                </button>
 
-                        <button className="text-orange-500 hover:text-orange-600" onClick={() => deleteCourse(info._id)}>
-                            <FontAwesomeIcon icon={faTrash} />
-                        </button>
                     </div>
                 ))}
             </div>
