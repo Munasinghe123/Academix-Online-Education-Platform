@@ -1,39 +1,28 @@
-import React, { createContext, useState, useContext } from 'react';
-import axios from 'axios';
-import { AuthContext } from './AuthContext';
+import { createContext, useState, useEffect } from "react";
+import axios from "axios";
 
 export const CartContext = createContext();
 
 const CartProvider = ({ children }) => {
+    const [cartItems, setCartItems] = useState([]);
 
-    const { user } = useContext(AuthContext);
-    const [cart, setCart] = useState([]);
-
-
-
-    const addToCart = async (courseId, quantity) => {
+    const fetchCartItems = async (userId) => {
         try {
-            const accessToken = localStorage.getItem("accessToken");
-
-            const response = await axios.post(`http://localhost:7001/api/cart/addToCart`,
-                {
-                    userId: user.id,
-                    courseId,
-                    quantity
-                },
-                {
-                    headers: { Authorization: `Bearer ${accessToken}` },
+            if (!userId) return;
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axios.get(`http://localhost:7001/api/cart/getCartById/${userId}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
                 }
-            );
-
-            setCart(response.data.cartItem);
-        } catch (error) {
-            console.error("Error adding to cart:", error.response?.data || error.message);
+            });
+            setCartItems(response.data.cartItems);
+        } catch (err) {
+            console.error("Error fetching cart items:", err);
         }
     };
 
     return (
-        <CartContext.Provider value={{ cart, addToCart }}>
+        <CartContext.Provider value={{ cartItems, setCartItems, fetchCartItems }}>
             {children}
         </CartContext.Provider>
     );
