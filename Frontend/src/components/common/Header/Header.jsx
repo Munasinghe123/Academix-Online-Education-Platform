@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../../context/AuthContext';
+import { CartContext } from '../../../context/CartContext';
 import logo from './Academix.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTimes, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
@@ -8,6 +9,7 @@ import axios from 'axios';
 
 function Header() {
     const { user, logout } = useContext(AuthContext);
+    const { cartItems, fetchCartItems } = useContext(CartContext);
 
     //dropdown related
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -23,35 +25,17 @@ function Header() {
     const [courses, setCourses] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
 
-    //cart related
-    const [cartItems, setCartItems] = useState([]);
 
     //dropdown visibility
     const toggleDropdown = () => {
         setIsDropdownVisible((prev) => !prev);
     };
 
-    //fetch cart items
     useEffect(() => {
-
-        const fetchItems = async () => {
-            try {
-                const accessToken = localStorage.getItem('accessToken');
-                const response = await axios.get(`http://localhost:7001/api/cart/getCartById/${user.id}`, {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`
-                    }
-                })
-
-                setCartItems(response.data.cartItems);
-                console.log("header - cart items",response.data.cartItems)
-            } catch (err) {
-                console.log(err);
-                // alert("Couldnt get the cart items")
-            }
+        if (user) {
+            fetchCartItems(user.id);
         }
-        fetchItems();
-    }, [user])
+    }, [user,cartItems]);
 
     //user photo
     useEffect(() => {

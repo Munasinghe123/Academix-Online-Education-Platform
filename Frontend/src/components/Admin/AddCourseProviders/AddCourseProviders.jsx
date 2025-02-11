@@ -28,14 +28,14 @@ function AddCourseProviders() {
         formData.append("photo", photo);
 
         try {
-            const token = localStorage.getItem('token');
+            const accessToken = localStorage.getItem('accessToken');
 
             const response = await axios.post(
                 `http://localhost:7001/api/users/addCourseProvider`,
                 formData,
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${accessToken}`,
                         'Content-Type': 'multipart/form-data',
                     },
                 }
