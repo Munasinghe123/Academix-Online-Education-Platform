@@ -1,10 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import './LandingPage.css';
 import learning from './learning.jpg';
+import axios from 'axios';
 
 function LandingPage() {
+
+    const [courses, setCourses] = useState([]);
+
+    useEffect(() => {
+
+        const fetchCourses = async () => {
+
+            try {
+                const response = await axios.get(`http://localhost:7001/api/courses/getAllCourses`)
+                setCourses(response.data);
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        fetchCourses();
+    }, [])
+
+
     return (
         <div className="landing-page">
 
@@ -93,36 +112,26 @@ function LandingPage() {
                 </div>
             </motion.section>
 
-            {/* Popular Courses Section */}
-            <motion.section
-                className="courses-section"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={{
-                    hidden: { opacity: 0, y: 50 },
-                    visible: { opacity: 1, y: 0 },
-                }}
-            >
-                <h2>Explore Popular Courses</h2>
-                <div className="courses-grid">
-                    <motion.div className="course-card">
-                        <img src="https://via.placeholder.com/200" alt="Web Development" />
-                        <h3>Web Development</h3>
-                        <p>Learn the basics of web development.</p>
-                    </motion.div>
-                    <motion.div className="course-card">
-                        <img src="https://via.placeholder.com/200" alt="Data Science" />
-                        <h3>Data Science</h3>
-                        <p>Explore data analysis and machine learning.</p>
-                    </motion.div>
-                    <motion.div className="course-card">
-                        <img src="https://via.placeholder.com/200" alt="Graphic Design" />
-                        <h3>Graphic Design</h3>
-                        <p>Master design skills with hands-on projects.</p>
-                    </motion.div>
-                </div>
-            </motion.section>
+            <div className="flex flex-wrap gap-x-6">
+                {courses.map((course, index) => {
+                    return (
+                        <Link to={`/courseDetails/${course._id}`}>
+                            <div
+                                key={index}
+                                className="flex flex-col border border-gray-300 rounded-lg shadow-lg bg-white p-4 w-64"
+                            >
+                                <img
+                                    src={`http://localhost:7001/uploads/${course.photo}`}
+                                    alt={course.courseName}
+                                    className="w-full h-36 object-cover rounded-lg mb-4"
+                                />
+                                <h4 className="text-lg font-bold mb-2">{course.courseName}</h4>
+                                <p className="text-gray-600">{course.courseDescription}</p>
+                            </div>
+                        </Link>
+                    );
+                })}
+            </div>
 
         </div>
     );

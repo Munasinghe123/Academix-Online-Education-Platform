@@ -1,47 +1,84 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../../context/AuthContext';
+import { CartContext } from '../../../context/CartContext';
 import logo from './Academix.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faTimes, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
 function Header() {
     const { user, logout } = useContext(AuthContext);
+    const { cartItems } = useContext(CartContext);
 
+    //debugging
+    console.log("length of cart items in header",cartItems.length)
+
+    //dropdown related
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
     const [isUserSubmenuVisible, setIsUserSubmenuVisible] = useState(false);
     const [isCourseSubmenuVisible, setIsCourseSubmenuVisible] = useState(false);
     const [isRegisterUsersVisible, setIsRegisterUsersVisible] = useState(false);
 
+    //user related
     const [photo, setPhoto] = useState(null);
+    const [name, setName] = useState("");
 
+    //course related
+    const [courses, setCourses] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
+
+
+    //dropdown visibility
     const toggleDropdown = () => {
         setIsDropdownVisible((prev) => !prev);
     };
 
+
+    //user photo
     useEffect(() => {
         const fetchUserPhoto = async () => {
             if (user && user.id) {
                 try {
-                    const token = localStorage.getItem('token');
+                    const accessToken = localStorage.getItem('accessToken');
                     const response = await axios.get(`http://localhost:7001/api/users/getUserById/${user.id}`, {
                         headers: {
-                            Authorization: `Bearer ${token}`,
+                            Authorization: `Bearer ${accessToken}`,
                         },
                     });
                     setPhoto(response.data.user.photo);
+                    setName(response.data.user.name);
                 } catch (err) {
                     console.log('Error fetching user photo:', err);
                 }
             } else {
-                setPhoto(null); // Clear photo when user is null
+                setPhoto(null);
             }
         };
 
         fetchUserPhoto();
-    }, [user]); // Runs whenever the 'user' changes
+    }, [user]);
 
+    //course data
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+            
+                const response = await axios.get(`http://localhost:7001/api/courses/getAllCourses`)
+
+                setCourses(response.data);
+                console.log("all courses", response.data);
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        fetchCourses();
+    }, [])
+
+    //search querry
+    const filteredCourses = courses.filter(course =>
+        course.courseName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
         <header className="bg-white text-black py-5 px-10 flex justify-between items-center shadow-md fixed top-0 left-0 w-full h-24 z-50 backdrop-blur-sm">
@@ -55,13 +92,43 @@ function Header() {
                         type="text"
                         className="py-2 px-4 pl-12 border-2 border-gray-300 rounded-full text-base w-[600px] focus:outline-none focus:border-orange-400"
                         placeholder="Search for courses..."
+                        onChange={(e) => setSearchQuery(e.target.value)}
+
                     />
                     <span className="absolute top-1/2 left-4 transform -translate-y-1/2 text-gray-500 text-lg">🔍</span>
                 </div>
+                {searchQuery.trim() !== "" && (
+                    <div className="absolute top-full mt-2 w-[600px] bg-white p-4 rounded shadow-lg max-h-96 overflow-y-auto z-50">
+                        {filteredCourses.length > 0 ? (
+                            filteredCourses.map((course, index) => (
+                                <Link to={`/courseDetails/${course._id}`}>
+                                    < div
+                                        key={index}
+                                        className="flex items-center gap-4 p-4 mb-2 bg-gray-100 rounded-lg shadow hover:bg-gray-200"
+                                    >
+                                        <img
+                                            src={`http://localhost:7001/uploads/${course.photo}`}
+                                            alt={course.courseName}
+                                            className="w-16 h-16 object-cover rounded-lg"
+                                        />
+                                        <div>
+                                            <h4 className="text-lg font-bold">{course.courseName}</h4>
+                                            <p className="text-sm text-gray-600">{course.courseDescription}</p>
+                                        </div>
+                                    </div>
+                                </Link>
+                            ))
+                        ) : (
+                            <p className="text-gray-500">No courses found.</p>
+                        )}
+                    </div>
+                )
+                }
+
 
                 <div className="flex items-center ml-5">
                     <h2 className="text-black mr-5">
-                        Welcome, {user ? user.name : 'Guest'}
+                        Welcome, {user ? name : 'Guest'}
                     </h2>
 
                     {photo ? (
@@ -79,6 +146,19 @@ function Header() {
                             />
                         </>
                     )}
+
+                    {/* Cart icon */}
+                    <div className="relative ml-6 mr-6">
+                        <Link to="/cart">
+                            <FontAwesomeIcon icon={faShoppingCart} className="text-2xl text-orange-500" />
+                            {cartItems.length > 0 && (
+                                <span className="absolute top-[-25px] right-0 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                                    {cartItems.length}
+                                </span>
+                            )}
+                        </Link>
+                    </div>
+
 
                     {user ? (
                         <>
@@ -201,8 +281,8 @@ function Header() {
                         </Link>
                     )}
                 </div>
-            </div>
-        </header>
+            </div >
+        </header >
     );
 }
 

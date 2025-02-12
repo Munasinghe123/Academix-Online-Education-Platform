@@ -8,11 +8,11 @@ function ViewCourseProviders() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const token = localStorage.getItem("token");
+                const accessToken = localStorage.getItem("accessToken");
 
                 const response = await axios.get(`http://localhost:7001/api/users/getAllUsers`, {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${accessToken}`,
                     },
                 });
 
@@ -88,7 +88,7 @@ function ViewCourseProviders() {
                 </div>
             </div>
 
-        
+
         </div>
     );
 }

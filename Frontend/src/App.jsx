@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate,useLocation } from 'react-router-dom'
 import { AuthContext } from './context/AuthContext'
 
 import LandingPage from './components/common/LandingPage/LandingPage'
@@ -17,11 +17,20 @@ import AddCourses from './components/Admin-CoureProvider-Common/AddCourses/AddCo
 import ViewCourses from './components/common/Courses/ViewCourses'
 import UpdateCourses from './components/Admin-CoureProvider-Common/UpdateCourses/UpdateCourses'
 import CourseDetails from './components/common/Courses/CourseDetails'
+import Profilepage from './components/user/ProfilePage/Profilepage'
+import Updateprofile from './components/user/update/Updateprofile'
+import Cart from './components/PaymentRelated/Cart/Cart'
+import Payment from './components/PaymentRelated/Payment/Payment'
 
 function App() {
+  const { user } = useContext(AuthContext);
 
-  const { user } = useContext(AuthContext)
+  function PrivateRoute({ children }) {
+    const { user } = useContext(AuthContext);
+    const location = useLocation();
 
+    return user ? children : <Navigate to="/login" state={{ from: location.pathname }} />;
+}
   return (
     <>
       <Header />
@@ -30,9 +39,15 @@ function App() {
         <Route path='/register' element={<Register />} />
         <Route path='/ViewCourses' element={<ViewCourses />} />
         <Route path='/CourseDetails/:id' element={<CourseDetails />} />
+        <Route path='/profile' element={<Profilepage />} />
+        <Route path='/Updateprofile/:id' element={<Updateprofile />} />
+        <Route path='/payment' element={<Payment />} />
+
+        <Route path="/cart" element={<PrivateRoute><Cart/></PrivateRoute>} />
+
         {user ? (
           <>
-            {
+            { 
               user.role === 'admin' && (
                 <>
 

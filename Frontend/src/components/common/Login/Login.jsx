@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { AuthContext } from "../../../context/AuthContext";
 import { useContext } from "react";
 
 function Login() {
     const navigate = useNavigate();
+    const location = useLocation(); 
     const { login } = useContext(AuthContext);
 
     const [name, setName] = useState("");
@@ -17,26 +18,25 @@ function Login() {
 
         const user = { name, password };
 
-        const response = await axios.post(
-            `http://localhost:7001/api/users/login`,
-            user
-        );
+        const response = await axios.post('http://localhost:7001/api/users/login', user, {
+            withCredentials: true, 
+        });
 
-        const token = response.data.token;
-        console.log("token", token);
+        const accessToken = response.data.accessToken;
+        console.log("accessToken", accessToken);
 
-        login(token);
+        login(accessToken);
 
-        const decode = jwtDecode(token);
-        console.log("decoded token", decode);
+        const decode = jwtDecode(accessToken);
+        console.log("decoded accessToken", decode);
 
-        if (decode.role === "student") {
-            navigate("/studentDashBoard");
-        } else if (decode.role === "courseProvider") {
-            navigate("/CourseProviderDashBaord");
-        } else if (decode.role === "admin") {
-            navigate("/adminDashBoard");
-        }
+    
+        const redirectPath = location.state?.from || 
+            (decode.role === "student" ? "/studentDashBoard" :
+            decode.role === "courseProvider" ? "/CourseProviderDashBaord" :
+            decode.role=== "admin" ? "/adminDashBoard" : "/register");
+
+        navigate(redirectPath);
     };
 
     return (
