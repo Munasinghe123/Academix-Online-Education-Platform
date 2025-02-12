@@ -148,7 +148,7 @@ function Header() {
                     )}
 
                     {/* Cart icon */}
-                    <div className="relative ml-6">
+                    <div className="relative ml-6 mr-6">
                         <Link to="/cart">
                             <FontAwesomeIcon icon={faShoppingCart} className="text-2xl text-orange-500" />
                             {cartItems.length > 0 && (

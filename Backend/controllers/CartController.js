@@ -40,7 +40,7 @@ const getCartById = async (req, res) => {
 
         console.log("user id", id);
 
-        let cart = await cartModel.find({ userId: id }).populate("courseId", "courseName photo");
+        let cart = await cartModel.find({ userId: id }).populate("courseId", "courseName photo price");
 
         console.log("cart items", cart);
         if (!cart.length) {

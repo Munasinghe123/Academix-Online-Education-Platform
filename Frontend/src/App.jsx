@@ -41,9 +41,9 @@ function App() {
         <Route path='/CourseDetails/:id' element={<CourseDetails />} />
         <Route path='/profile' element={<Profilepage />} />
         <Route path='/Updateprofile/:id' element={<Updateprofile />} />
-        <Route path='/cart' element={<Cart />} />
+        <Route path='/payment' element={<Payment />} />
 
-        <Route path="/cart" element={<PrivateRoute><Payment /></PrivateRoute>} />
+        <Route path="/cart" element={<PrivateRoute><Cart/></PrivateRoute>} />
 
         {user ? (
           <>

@@ -48,11 +48,11 @@ function AddCourses() {
         });
 
         try {
-            const token = localStorage.getItem("token");
+            const accessToken = localStorage.getItem("accessToken");
 
             const response = await axios.post(`http://localhost:7001/api/courses/addCourse`, formData, {
                 headers: {
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${accessToken}`
                 }
             });
 
