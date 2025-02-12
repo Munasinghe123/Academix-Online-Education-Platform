@@ -8,6 +8,7 @@ export const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  // const [isLoading, setIsLoading] = useState(true);
   const [accessToken, setAccessToken] = useState(localStorage.getItem("accessToken"));
 
   // Auto-refresh token if it’s about to expire
@@ -33,6 +34,7 @@ const AuthProvider = ({ children }) => {
         setUser(null);
       }
     }
+    // setIsLoading(false);
   }, [accessToken]);
 
 
@@ -80,7 +82,7 @@ const AuthProvider = ({ children }) => {
   const isAuthenticated = !!user;
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, refreshAccessToken, isAuthenticated }}>
+    <AuthContext.Provider value={{ user,login, logout, refreshAccessToken, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );

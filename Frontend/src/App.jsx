@@ -25,12 +25,17 @@ import Payment from './components/PaymentRelated/Payment/Payment'
 function App() {
   const { user } = useContext(AuthContext);
 
-  function PrivateRoute({ children }) {
-    const { user } = useContext(AuthContext);
-    const location = useLocation();
-
-    return user ? children : <Navigate to="/login" state={{ from: location.pathname }} />;
-}
+  // function PrivateRoute({ children }) {
+  //   const { user, isLoading } = useContext(AuthContext);
+  //   const location = useLocation();
+  
+  //   if (isLoading) {
+  //     return <div>Loading...</div>;  // Show loading indicator instead of redirecting too soon
+  //   }
+  
+  //   return user ? children : <Navigate to="/login" state={{ from: location.pathname }} />;
+  // }
+  
   return (
     <>
       <Header />
@@ -41,9 +46,10 @@ function App() {
         <Route path='/CourseDetails/:id' element={<CourseDetails />} />
         <Route path='/profile' element={<Profilepage />} />
         <Route path='/Updateprofile/:id' element={<Updateprofile />} />
-        <Route path='/cart' element={<Cart />} />
+        <Route path='/payment' element={<Payment />} />
 
-        <Route path="/cart" element={<PrivateRoute><Payment /></PrivateRoute>} />
+        {/* <Route path="/cart" element={<PrivateRoute><Cart/></PrivateRoute>} /> */}
+        <Route path='/cart' element={<Cart/>}/>
 
         {user ? (
           <>
