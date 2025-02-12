@@ -14,6 +14,7 @@ const CartProvider = ({ children, userId }) => {
 
     const navigate=useNavigate();
 
+    
     //get the cart items
     const fetchCartItems = async (userId) => {
         try {
@@ -26,10 +27,19 @@ const CartProvider = ({ children, userId }) => {
             
             setTotalPrice(response.data.cartItems.map(item => item?.courseId?.price || 0)); //optional rendering,fetches the courseId if the items exixts and soon.
 
+            
+            
         } catch (err) {
             console.error("Error fetching cart items:", err);
         }
     };
+
+    //refreshing the price after deletion
+    useEffect(()=>{
+        if(cartItems.length===0){
+            setTotalPrice([])
+        }
+    },[cartItems])
     
 
     //get the cart items after login
@@ -79,6 +89,8 @@ const CartProvider = ({ children, userId }) => {
     
             // Update the cartItems state after successful deletion
             setCartItems(prevCartItems => prevCartItems.filter(item => item._id !== courseId));
+
+            fetchCartItems(user.id)
     
         } catch (err) {
             console.error("Error deleting cart item", err);
